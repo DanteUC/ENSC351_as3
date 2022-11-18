@@ -10,7 +10,6 @@
 
 #define BASEDRUM_FILE "beatbox-wav-files/100051__menegass__gui-drum-bd-hard.wav"
 
-
 int main()
 {
     printf("Starting beatbox...\n");

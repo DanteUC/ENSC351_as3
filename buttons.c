@@ -28,12 +28,14 @@
 
 const char* ButtonArray[] = {BUTTON_1, BUTTON_2, BUTTON_3, BUTTON_4};
 
+
 void ButtonArray_getButtonValues(int *values)
 {
     for(int i = 0; i< BUTTON_ARRAY_SIZE; i++){
         values[i] = Utils_readIntFromFile(Utils_concat(ButtonArray[i], VALUE_PATH));
     }
 }
+
 
 
 // void* buttonsThread(void* arg)
@@ -68,9 +70,15 @@ static int waitForGpioEdge(const char* fileArrayForGpioValue [])
 	int fdThree = 0;
 	int fdFour = 0;
 
-	int fileDescriptors[] = {fdOne, fdTwo, fdThree, fdFour};
+	// struct epoll_event structOne;
+	// struct epoll_event structTwo;
+	// struct epoll_event structThree;
+	// struct epoll_event structFour;
 
+
+	int fileDescriptors[] = {fdOne, fdTwo, fdThree, fdFour};
 	struct epoll_event epollStruct;
+
 	// open GPIO value file:
 	for(int i = 0; i < BUTTON_ARRAY_SIZE;i++){
 		fileDescriptors[i] = open(Utils_concat(fileArrayForGpioValue[i], VALUE_PATH), O_RDONLY | O_NONBLOCK);
@@ -91,12 +99,12 @@ static int waitForGpioEdge(const char* fileArrayForGpioValue [])
 	}
 	
 
-	// ignore first (4) trigger(s)
-	for (int i = 0; i < 5; i++) {
+	// ignore first trigger
+	for (int i = 0; i < 2; i++) {
 		int waitRet = epoll_wait(
 				epollfd, 
 				&epollStruct, 
-				1,                // maximum # events
+				4,                // maximum # events
 				-1);              // timeout in ms, -1 = wait indefinite; 0 = returne immediately
 
 		if (waitRet == -1){
@@ -137,6 +145,13 @@ void initializeButtons()
     }
 }
 
+static int readLineFromFile(char* fileName, char* buff, unsigned int maxLength)
+{
+	FILE *file = fopen(fileName, "r");
+	int bytes_read = getline(&buff, &maxLength, file);
+	fclose(file);
+	return bytes_read;
+}
 
 void testEdgeTrigger(){
 	while (1) {
@@ -145,16 +160,43 @@ void testEdgeTrigger(){
 		if (ret == -1) {
 			exit(EXIT_FAILURE);
 		}
-		printf("Button Pressed\n");
 		
 		// Current state:
-		// char buff[1024];
-		// int bytesRead = Utils_readIntFromFile(Utils_concat(BUTTON_1, VALUE_PATH));
-		// if (bytesRead > 0) {
-		// 	printf("GPIO pin reads: %c\n", buff[0]);
-		// } else {
-		// 	fprintf(stderr, "ERROR: Read 0 bytes from GPIO input: %s\n", strerror(errno));
-		// }
+		for(int i = 0; i < BUTTON_ARRAY_SIZE;i++){
+			char buff[1024];
+			int bytesRead = readLineFromFile(Utils_concat(ButtonArray[i], VALUE_PATH), buff, 1024);
+			if (bytesRead > 0) {
+				
+				if(buff[0]=='1'){
+					switch (i)
+					{
+					case 0:
+						printf("beat\n");
+						//change beat mode
+						break;
+					case 1:
+						printf("base\n");
+						//play base drum
+						break;
+					case 2:
+						printf("snare\n");
+						//play snare drum
+						break;
+					case 3: 
+						printf("hi hat\n");
+						//play hi-hat
+						break;
+					default:
+						printf("waddahell\n");
+						break;
+					}
+				}
+				
+			} else {
+				fprintf(stderr, "ERROR: Read 0 bytes from GPIO input: %s\n", strerror(errno));
+			}
+		}
+		
 		Utils_sleepForMs(100);
 
 	}
