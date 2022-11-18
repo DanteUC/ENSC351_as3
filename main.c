@@ -1,6 +1,8 @@
 #include "audioMixer.h"
 #include "matrix.h"
 #include "joystick.h"
+#include "buttons.h"
+#include "utils.h"
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -14,9 +16,14 @@ int main()
     printf("Starting beatbox...\n");
 
     initializeMatrix();
-    AudioMixer_init();
-    
+    //AudioMixer_init();
+    initializeButtons();
+
     displayMode(1);
+    testEdgeTrigger();
+    
+   
+    
 
     // Load wave file we want to play:
 	wavedata_t sampleFile;

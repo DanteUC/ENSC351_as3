@@ -1,4 +1,5 @@
 #include "matrix.h"
+#include "utils.h"
 #define DECIMAL 0b1000
 #define EMPTY 0x00
 static unsigned char zero[] = {0b111, 0b101, 0b101, 0b101, 0b101, 0b101, 0b111};
@@ -186,12 +187,17 @@ void displayDouble(double value)
 
 void initializeMatrix()
 {
+    runCommand("config-pin P9_18 i2c");
+    Utils_sleepForMs(500);
+    runCommand("config-pin P9_17 i2c");
+    Utils_sleepForMs(500);
     runCommand("i2cset -y 1 0x70 0x21 0x00");
     runCommand("i2cset -y 1 0x70 0x81 0x00");
+
 }
 
 /*
-static void sleepForMs(long long delayInMs)
+static void sleepForMs(long long delayInsMs)
 {
     const long long NS_PER_MS = 1000 * 1000;
     const long long NS_PER_SECOND = 1000000000;
