@@ -34,22 +34,22 @@ static double Joystick_readX(){
     return adjusted;
 }
 
-int getDirection(){
+int joystick_getDirection(){
 
     double X = Joystick_readX();
     double Y = Joystick_readY();
 
     if(Y>0.5||Y<-0.5){
         if(Y>0){
-            return 1;
-        }else{
             return 2;
+        }else{
+            return 1;
         };
     }else if(X>0.5 || X < -0.5){
         if(X>0){
-            return 3;
-        }else{
             return 4;
+        }else{
+            return 3;
         }
     }else{
         return 0;
@@ -57,9 +57,11 @@ int getDirection(){
 
 }
 
-void testJoystick(){
+
+
+void joystick_testJoystick(){
     while(true){
-        int direction = getDirection();
+        int direction = joystick_getDirection();
         printf("direction: %i\n", direction);
     }
 }

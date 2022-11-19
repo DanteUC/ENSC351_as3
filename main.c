@@ -3,6 +3,7 @@
 #include "joystick.h"
 #include "buttons.h"
 #include "utils.h"
+#include "control.h"
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -14,22 +15,23 @@ int main()
 {
     printf("Starting beatbox...\n");
 
-    initializeMatrix();
+    matrix_initializeMatrix();
     //AudioMixer_init();
-    initializeButtons();
+    buttons_initializeButtons();
 
-    displayMode(1);
-    testEdgeTrigger();
+    matrix_displayMode(1);
+    //testEdgeTrigger();
     
-   
+    control_joyStickControl();
+
     
 
     // Load wave file we want to play:
-	wavedata_t sampleFile;
-	AudioMixer_readWaveFileIntoMemory(BASEDRUM_FILE, &sampleFile);
+	// wavedata_t sampleFile;
+	// AudioMixer_readWaveFileIntoMemory(BASEDRUM_FILE, &sampleFile);
 
 
-    AudioMixer_cleanup();
+    // AudioMixer_cleanup();
 
     // while(1){
         

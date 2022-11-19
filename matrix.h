@@ -20,18 +20,18 @@
 #define MATRIX_LENGTH 8
 
 
-void initializeMatrix();
+void matrix_initializeMatrix();
 
 //takes an int from 1-4
-void displayMode(int mode);
+void matrix_displayMode(int mode);
 
 //displays a positive value between 0 and 99
 //any numbers above 99 will display 99, numbers below 0 will display 0
-void displayInteger(int value);
+void matrix_displayInteger(int value);
 
 //Displays a decimal value on the matrix to one decimal place. 
 //Values above 9.9 will display 9.9, values below 0 will display 0
-void displayDouble(double value);
+void matrix_displayDouble(double value);
 
 
 

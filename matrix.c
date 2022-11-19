@@ -91,7 +91,7 @@ unsigned char *getBinary(int digit)
 }
 
 //mode should be between 0-4
-void displayMode(int mode)
+void matrix_displayMode(int mode)
 {
     int i2cFileDesc = initI2cBus(I2CDRV_LINUX_BUS1, BUS_ADDR);
     unsigned char displayValue[8];
@@ -118,7 +118,7 @@ void displayMode(int mode)
 
 
 
-void displayInteger(int value)
+void matrix_displayInteger(int value)
 {
     int i2cFileDesc = initI2cBus(I2CDRV_LINUX_BUS1, BUS_ADDR);
     unsigned char displayValue[7];
@@ -151,7 +151,7 @@ void displayInteger(int value)
     writeI2CBytes(i2cFileDesc, REG_ADDR, displayValue, NUM_BYTES);
     
 }
-void displayDouble(double value)
+void matrix_displayDouble(double value)
 {
     int i2cFileDesc = initI2cBus(I2CDRV_LINUX_BUS1, BUS_ADDR);
     unsigned char displayValue[7];
@@ -185,7 +185,7 @@ void displayDouble(double value)
     
 }
 
-void initializeMatrix()
+void matrix_initializeMatrix()
 {
     runCommand("config-pin P9_18 i2c");
     Utils_sleepForMs(500);
@@ -197,31 +197,20 @@ void initializeMatrix()
 }
 
 /*
-static void sleepForMs(long long delayInsMs)
-{
-    const long long NS_PER_MS = 1000 * 1000;
-    const long long NS_PER_SECOND = 1000000000;
-    long long delayNs = delayInMs * NS_PER_MS;
-    int seconds = delayNs / NS_PER_SECOND;
-    int nanoseconds = delayNs % NS_PER_SECOND;
-    struct timespec reqDelay = {seconds, nanoseconds};
-    nanosleep(&reqDelay, (struct timespec *) NULL);
-}
-
 static void unitTestMatrix()
 {
 
     int i = -10;
     while(i<120){
         displayInteger(i);
-        sleepForMs(100);
+        Utils_sleepForMs(100);
         i++;
     }
     
     double j = -2.0;
     while (j < 15.0){
         displayDouble(j);
-        sleepForMs(100);
+        Utils_sleepForMs(100);
         j = j+0.1;
     }
 }

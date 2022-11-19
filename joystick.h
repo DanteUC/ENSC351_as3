@@ -17,7 +17,7 @@
 //returns 1 for up, 2 for down, 3 for right, 4 for left and 0 for no value
 //will prioritize up or down over left and right
 //i.e if up or down value is at least half of max, it will return that value
-int getDirection();
-void writeToMatrix();
-void testJoystick();
+int joystick_getDirection();
+//void joystick_writeToMatrix();
+void joystick_testJoystick();
 #endif

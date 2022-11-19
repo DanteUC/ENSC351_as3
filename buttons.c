@@ -37,7 +37,6 @@ void ButtonArray_getButtonValues(int *values)
 }
 
 
-
 // void* buttonsThread(void* arg)
 // {
 
@@ -127,7 +126,7 @@ static int waitForGpioEdge(const char* fileArrayForGpioValue [])
 }
 
 
-void initializeButtons()
+void buttons_initializeButtons()
 {
     //set each config
     Utils_runCommand("config-pin P8.15 gpio");
@@ -153,7 +152,7 @@ static int readLineFromFile(char* fileName, char* buff, unsigned int maxLength)
 	return bytes_read;
 }
 
-void testEdgeTrigger(){
+void buttons_pollButtons(){
 	while (1) {
 		// Wait for an edge trigger:
 		int ret = waitForGpioEdge(ButtonArray);
@@ -171,7 +170,7 @@ void testEdgeTrigger(){
 					switch (i)
 					{
 					case 0:
-						printf("beat\n");
+						printf("cheange beat mode\n");
 						//change beat mode
 						break;
 					case 1:
@@ -183,7 +182,7 @@ void testEdgeTrigger(){
 						//play snare drum
 						break;
 					case 3: 
-						printf("hi hat\n");
+						printf("play hi hat\n");
 						//play hi-hat
 						break;
 					default:
