@@ -6,6 +6,7 @@
         "stdio.h": "c",
         "unistd.h": "c",
         "joystick.h": "c",
-        "matrix.h": "c"
+        "matrix.h": "c",
+        "pthread.h": "c"
     }
 }

@@ -39,6 +39,7 @@ int joystick_getDirection(){
     double X = Joystick_readX();
     double Y = Joystick_readY();
 
+    //had to invert because joystick was technically upside down
     if(Y>0.5||Y<-0.5){
         if(Y>0){
             return 2;
@@ -59,12 +60,12 @@ int joystick_getDirection(){
 
 
 
-void joystick_testJoystick(){
-    while(true){
-        int direction = joystick_getDirection();
-        printf("direction: %i\n", direction);
-    }
-}
+// void joystick_testJoystick(){
+//     while(true){
+//         int direction = joystick_getDirection();
+//         printf("direction: %i\n", direction);
+//     }
+// }
 /*
 int main(){
     while(true){

@@ -6,9 +6,16 @@
 #include "utils.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <pthread.h>
 
-void control_joyStickControl(){
-    while(1){
+
+static bool isExit = false;
+static pthread_t buttonid;
+static pthread_t joystickid;
+
+
+static void control_pollJoystick(){
+    
         int direction = joystick_getDirection();
         int currentVolume;
         switch (direction)
@@ -65,5 +72,42 @@ void control_joyStickControl(){
         default:
             break;
         }
+
+}
+
+
+static void *control_buttonsControl(void* arg){
+    while(!isExit){
+        buttons_pollButtons();
     }
+    //check for stuff on exit?
+    return NULL;
+}
+static void *control_joystickControl(void* arg){
+    while(!isExit){
+        control_pollJoystick();
+    }
+    //check for stuff on exit?
+    pthread_exit(0);
+}
+void control_startPollingButtons(void){
+    pthread_attr_t buttonattr;
+    pthread_attr_init (&buttonattr);
+    pthread_create(&buttonid, &buttonattr, control_buttonsControl, NULL);
+}
+
+void control_startPollingJoystick(void){
+    pthread_attr_t joystickattr;
+    pthread_attr_init (&joystickattr);
+    pthread_create(&joystickid, &joystickattr, control_joystickControl, NULL);
+}
+
+void control_stopPollingButtons(void){
+    isExit = true;
+    pthread_join(buttonid, NULL);
+}
+
+void control_stopPollingJoystick(void){
+    isExit = true;
+    pthread_join(joystickid, NULL);
 }

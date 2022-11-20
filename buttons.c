@@ -153,51 +153,50 @@ static int readLineFromFile(char* fileName, char* buff, unsigned int maxLength)
 }
 
 void buttons_pollButtons(){
-	while (1) {
-		// Wait for an edge trigger:
-		int ret = waitForGpioEdge(ButtonArray);
-		if (ret == -1) {
-			exit(EXIT_FAILURE);
-		}
-		
-		// Current state:
-		for(int i = 0; i < BUTTON_ARRAY_SIZE;i++){
-			char buff[1024];
-			int bytesRead = readLineFromFile(Utils_concat(ButtonArray[i], VALUE_PATH), buff, 1024);
-			if (bytesRead > 0) {
-				
-				if(buff[0]=='1'){
-					switch (i)
-					{
-					case 0:
-						printf("cheange beat mode\n");
-						//change beat mode
-						break;
-					case 1:
-						printf("base\n");
-						//play base drum
-						break;
-					case 2:
-						printf("snare\n");
-						//play snare drum
-						break;
-					case 3: 
-						printf("play hi hat\n");
-						//play hi-hat
-						break;
-					default:
-						printf("waddahell\n");
-						break;
-					}
-				}
-				
-			} else {
-				fprintf(stderr, "ERROR: Read 0 bytes from GPIO input: %s\n", strerror(errno));
-			}
-		}
-		
-		Utils_sleepForMs(100);
-
+	// Wait for an edge trigger:
+	int ret = waitForGpioEdge(ButtonArray);
+	if (ret == -1) {
+		exit(EXIT_FAILURE);
 	}
-	return;
+	
+	// Current state:
+	for(int i = 0; i < BUTTON_ARRAY_SIZE;i++){
+		char buff[1024];
+		int bytesRead = readLineFromFile(Utils_concat(ButtonArray[i], VALUE_PATH), buff, 1024);
+		if (bytesRead > 0) {
+			
+			if(buff[0]=='1'){
+				switch (i)
+				{
+				case 0:
+					printf("change beat mode\n");
+					//change beat mode
+					break;
+				case 1:
+					printf("base\n");
+					//play base drum
+					break;
+				case 2:
+					printf("snare\n");
+					//play snare drum
+					break;
+				case 3: 
+					printf("play hi hat\n");
+					//play hi-hat
+					break;
+				default:
+					printf("waddahell\n");
+					break;
+				}
+			}
+			
+		} else {
+			fprintf(stderr, "ERROR: Read 0 bytes from GPIO input: %s\n", strerror(errno));
+		}
+	}
+	
+	Utils_sleepForMs(100);
+
+
+return;
 }

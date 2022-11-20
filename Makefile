@@ -11,7 +11,7 @@ CROSS_TOOL = arm-linux-gnueabihf
 CC_CPP = $(CROSS_TOOL)-g++
 CC_C = $(CROSS_TOOL)-gcc
 
-CFLAGS = -g -std=c99 -D _POSIX_C_SOURCE=200809L -Werror -Wshadow -Wall
+CFLAGS = -g -std=c99 -D _POSIX_C_SOURCE=200809L -Werror -Wshadow -Wall -pthread
 
 # Asound Library
 # - See the AudioGuide for steps to copy library from target to host.
