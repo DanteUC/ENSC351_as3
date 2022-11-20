@@ -22,10 +22,6 @@ int main()
     control_startMatrix();
     control_startPollingButtons();
     control_startPollingJoystick();
-    // while(1){
-    //     buttons_pollButtons();
-    // }
-    
 
     printf("Enter 'Q' to quit.\n");
     while (true) {

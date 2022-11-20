@@ -19,7 +19,7 @@ int currentMode = 0;
 
 static void resetMatrix(){
     if(!matrixValueChanged){
-    matrix_displayMode(currentMode);
+        matrix_displayMode(currentMode);
     }else{
         matrixValueChanged = false;
     }
@@ -29,17 +29,20 @@ void control_updateMode(){
     if(currentMode==2){
         currentMode = 0;
         matrix_displayMode(currentMode);
+        //also update the beat mode in audio
     }else{
         currentMode++;
         matrix_displayMode(currentMode);
+        //update audio mode here
     }
-    matrixValueChanged = true;
+    
 }
 
 static void control_pollJoystick(){
     
         int direction = joystick_getDirection();
         int currentVolume;
+        //int currentBPM;
         switch (direction)
         {
         case 1:
@@ -47,6 +50,7 @@ static void control_pollJoystick(){
             currentVolume = AudioMixer_getVolume();
             AudioMixer_setVolume(currentVolume+5);
             matrix_displayInteger(currentVolume+5);
+            matrixValueChanged = true;
             Utils_sleepForMs(1000);
 
             while(joystick_getDirection() == 1){
@@ -63,6 +67,7 @@ static void control_pollJoystick(){
             currentVolume = AudioMixer_getVolume();
             AudioMixer_setVolume(currentVolume-5);
             matrix_displayInteger(currentVolume-5);
+            matrixValueChanged = true;
             Utils_sleepForMs(1000);
 
             while(joystick_getDirection() == 2){
@@ -77,9 +82,11 @@ static void control_pollJoystick(){
             //tempo up
             
             printf("tempo up\n");
+            //increment tempo 
             Utils_sleepForMs(1000);
             while(joystick_getDirection() == 3){
                 printf("tempo up\n");
+                //inc tempo
                 Utils_sleepForMs(500);
             }
             break;
@@ -87,9 +94,11 @@ static void control_pollJoystick(){
             //tempo down
             
             printf("tempo down\n");
+            //decrement tempo
             Utils_sleepForMs(1000);
             while(joystick_getDirection() == 4){
                 printf("tempo down\n");
+                //dec tempo
                 Utils_sleepForMs(500);
             }
             break;
@@ -131,6 +140,7 @@ void control_startPollingJoystick(void){
     pthread_attr_init (&joystickattr);
     pthread_create(&joystickid, &joystickattr, control_joystickControl, NULL);
 }
+
 void control_startMatrix(){
     pthread_attr_t matrixattr;
     pthread_attr_init (&matrixattr);

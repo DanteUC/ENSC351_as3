@@ -7,8 +7,5 @@
 //This function initializes the buttons as gpio and sets them to input
 void buttons_initializeButtons();
 
-//user must pass in an array of 5 button values to be edited to contain the values of the buttons
-void ButtonArray_getButtonValues(int *values);
-
 void buttons_pollButtons();
 #endif

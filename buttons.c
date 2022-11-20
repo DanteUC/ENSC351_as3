@@ -197,7 +197,5 @@ void buttons_pollButtons(){
 	}
 	
 	Utils_sleepForMs(100);
-
-
 return;
 }
