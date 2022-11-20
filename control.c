@@ -127,7 +127,7 @@ static void control_pollJoystick()
 static void *control_print(void * arg){
     while(!isExit){
         printf("mode:%i\n",control_getMode());
-        printf("tempo:%i\n beats per minute\n", beatGenerator_getbpm());
+        printf("beats per minute:%i\n", beatGenerator_getbpm());
         printf("volume:%i\n", AudioMixer_getVolume());
         //time between each playback buffer??
         printf("8th note interval:%lld\n",beatGenerator_calculateHalfBeatInMs());
@@ -160,50 +160,30 @@ static void *control_joystickControl(void* arg)
     }
     return NULL;
 }
-void control_startPollingButtons(void)
-{
+
+void control_startThreads(){
     pthread_attr_t buttonattr;
     pthread_attr_init (&buttonattr);
     pthread_create(&buttonid, &buttonattr, control_buttonsControl, NULL);
-}
 
-void control_startPollingJoystick(void)
-{
     pthread_attr_t joystickattr;
     pthread_attr_init (&joystickattr);
     pthread_create(&joystickid, &joystickattr, control_joystickControl, NULL);
-}
 
-void control_startMatrix()
-{
     pthread_attr_t matrixattr;
     pthread_attr_init (&matrixattr);
     pthread_create(&matrixid, &matrixattr, control_matrix, NULL);
-}
 
-void control_startPrint(void){
     pthread_attr_t printidattr;
     pthread_attr_init (&printidattr);
     pthread_create(&buttonid, &printidattr, control_print, NULL);
 }
-void control_stopPollingButtons(void)
-{
-    isExit = true;
-    pthread_join(buttonid, NULL);
-}
 
-void control_stopPollingJoystick(void)
-{
-    isExit = true;
-    pthread_join(joystickid, NULL);
-}
-void control_stopMatrix()
-{
+
+void control_stopThreads(){
     isExit = true;
     pthread_join(matrixid, NULL);
-}
-
-void control_stopPrint(){
-    isExit = true;
+    pthread_join(buttonid, NULL);
+    pthread_join(joystickid, NULL);
     pthread_join(printid, NULL);
 }

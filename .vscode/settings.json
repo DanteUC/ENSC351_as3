@@ -8,6 +8,7 @@
         "joystick.h": "c",
         "matrix.h": "c",
         "pthread.h": "c",
-        "audiomixer.h": "c"
+        "audiomixer.h": "c",
+        "stdbool.h": "c"
     }
 }

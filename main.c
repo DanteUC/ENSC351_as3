@@ -10,10 +10,6 @@
 #include <stdio.h>
 #include <time.h>
 #include <ctype.h>
-#include <pthread.h>
-
-
-
 
 
 int main()
@@ -24,11 +20,7 @@ int main()
     AudioMixer_init();
     beatGenerator_init();
     buttons_initializeButtons();
-    control_startMatrix();
-    control_startPollingButtons();
-    control_startPollingJoystick();
-    control_startPrint();
-
+    control_startThreads();
 
     printf("Enter 'Q' to quit.\n");
     while (true) {
@@ -43,10 +35,7 @@ int main()
     // Load wave file we want to play:
 	// wavedata_t sampleFile;
 	// AudioMixer_readWaveFileIntoMemory(BASEDRUM_FILE, &sampleFile);
-    control_stopPrint();
-    control_stopPollingButtons();
-    control_stopPollingJoystick();
-    control_stopMatrix();
+    control_stopThreads();
     beatGenerator_cleanup();
     AudioMixer_cleanup();
 

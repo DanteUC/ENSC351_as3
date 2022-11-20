@@ -5,19 +5,13 @@
 #define CONTROL_H
 #include <stdbool.h>
 //start the threads
-void control_startPollingButtons(void);
-void control_startPollingJoystick(void);
-void control_startMatrix(void);
-void control_startPrint(void);
-
+void control_startThreads();
 //cleanup memory and join threads
-void control_stopPollingButtons(void);
-void control_stopPollingJoystick(void);
-void control_stopMatrix(void);
-void control_stopPrint(void);
+void control_stopThreads();
 
-//updates the current application mode, 
+//updates the current application mode by incrementing one or setting back to 0
 void control_updateMode();
+//fet
 int control_getMode();
 
 #endif
