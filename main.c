@@ -10,7 +10,7 @@
 #include <time.h>
 #include <ctype.h>
 
-#define BASEDRUM_FILE "beatbox-wav-files/100051__menegass__gui-drum-bd-hard.wav"
+//#define BASEDRUM_FILE "beatbox-wav-files/100051__menegass__gui-drum-bd-hard.wav"
 
 int main()
 {
@@ -19,11 +19,7 @@ int main()
     matrix_initializeMatrix();
     //AudioMixer_init();
     buttons_initializeButtons();
-
-    matrix_displayMode(1);
-  
-    
-    //control_joyStickControl();
+    control_startMatrix();
     control_startPollingButtons();
     control_startPollingJoystick();
     // while(1){
@@ -49,5 +45,6 @@ int main()
 
     control_stopPollingButtons();
     control_stopPollingJoystick();
+    control_stopMatrix();
     return 0;
 }

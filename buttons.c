@@ -11,6 +11,7 @@
 #include <fcntl.h> 
 #include <errno.h>
 #include <unistd.h>
+#include "control.h"
 
 
 #define BUTTON_ARRAY_SIZE 4
@@ -169,7 +170,7 @@ void buttons_pollButtons(){
 				switch (i)
 				{
 				case 0:
-					printf("change beat mode\n");
+					control_updateMode();
 					//change beat mode
 					break;
 				case 1:

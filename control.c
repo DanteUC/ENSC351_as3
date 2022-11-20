@@ -9,10 +9,32 @@
 #include <pthread.h>
 
 
-static bool isExit = false;
+
 static pthread_t buttonid;
 static pthread_t joystickid;
+static pthread_t matrixid;
+static bool isExit = false;
+static bool matrixValueChanged = false;
+int currentMode = 0;
 
+static void resetMatrix(){
+    if(!matrixValueChanged){
+    matrix_displayMode(currentMode);
+    }else{
+        matrixValueChanged = false;
+    }
+}
+
+void control_updateMode(){
+    if(currentMode==2){
+        currentMode = 0;
+        matrix_displayMode(currentMode);
+    }else{
+        currentMode++;
+        matrix_displayMode(currentMode);
+    }
+    matrixValueChanged = true;
+}
 
 static void control_pollJoystick(){
     
@@ -31,6 +53,7 @@ static void control_pollJoystick(){
                 currentVolume = AudioMixer_getVolume();
                 AudioMixer_setVolume(currentVolume+5);
                 matrix_displayInteger(currentVolume+5);
+                matrixValueChanged = true;
                 Utils_sleepForMs(500);
             }
 
@@ -46,6 +69,7 @@ static void control_pollJoystick(){
                 currentVolume = AudioMixer_getVolume();
                 AudioMixer_setVolume(currentVolume-5);
                 matrix_displayInteger(currentVolume-5);
+                matrixValueChanged = true;
                 Utils_sleepForMs(500);
             }
             break;
@@ -80,15 +104,21 @@ static void *control_buttonsControl(void* arg){
     while(!isExit){
         buttons_pollButtons();
     }
-    //check for stuff on exit?
+    return NULL;
+}
+
+static void *control_matrix(void* arg){
+    while(!isExit){
+        resetMatrix();
+        Utils_sleepForMs(2000);
+    }
     return NULL;
 }
 static void *control_joystickControl(void* arg){
     while(!isExit){
         control_pollJoystick();
     }
-    //check for stuff on exit?
-    pthread_exit(0);
+    return NULL;
 }
 void control_startPollingButtons(void){
     pthread_attr_t buttonattr;
@@ -101,7 +131,11 @@ void control_startPollingJoystick(void){
     pthread_attr_init (&joystickattr);
     pthread_create(&joystickid, &joystickattr, control_joystickControl, NULL);
 }
-
+void control_startMatrix(){
+    pthread_attr_t matrixattr;
+    pthread_attr_init (&matrixattr);
+    pthread_create(&matrixid, &matrixattr, control_matrix, NULL);
+}
 void control_stopPollingButtons(void){
     isExit = true;
     pthread_join(buttonid, NULL);
@@ -111,3 +145,8 @@ void control_stopPollingJoystick(void){
     isExit = true;
     pthread_join(joystickid, NULL);
 }
+void control_stopMatrix(){
+    isExit = true;
+    pthread_join(matrixid, NULL);
+}
+
