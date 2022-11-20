@@ -2,6 +2,7 @@
 #include "buttons.h"
 #include "joystick.h"
 #include "audioMixer.h"
+#include "beatGenerator.h"
 #include "matrix.h"
 #include "utils.h"
 #include <stdlib.h>
@@ -41,8 +42,8 @@ void control_updateMode(){
 static void control_pollJoystick(){
     
         int direction = joystick_getDirection();
-        int currentVolume;
-        //int currentBPM;
+        int currentVolume=0;
+        int currentBPM=0;
         switch (direction)
         {
         case 1:
@@ -78,34 +79,42 @@ static void control_pollJoystick(){
                 Utils_sleepForMs(500);
             }
             break;
+
         case 3:
             //tempo up
-            
-            printf("tempo up\n");
-            //increment tempo 
+            currentBPM = get_bpm();
+            set_bpm(currentBPM+5);
+            matrixValueChanged = true;
+            matrix_displayInteger(get_bpm());
             Utils_sleepForMs(1000);
             while(joystick_getDirection() == 3){
-                printf("tempo up\n");
-                //inc tempo
+                currentBPM = get_bpm();
+                set_bpm(currentBPM+5);
+                matrix_displayInteger(get_bpm());
+                matrixValueChanged = true;
                 Utils_sleepForMs(500);
             }
             break;
+
         case 4:
             //tempo down
-            
-            printf("tempo down\n");
-            //decrement tempo
+            currentBPM = get_bpm();
+            set_bpm(currentBPM-5);
+            matrixValueChanged = true;
+            matrix_displayInteger(get_bpm());
             Utils_sleepForMs(1000);
             while(joystick_getDirection() == 4){
-                printf("tempo down\n");
-                //dec tempo
+                currentBPM = get_bpm();
+                set_bpm(currentBPM-5);
+                matrix_displayInteger(get_bpm());
+                matrixValueChanged = true;
                 Utils_sleepForMs(500);
             }
             break;
+
         default:
             break;
         }
-
 }
 
 

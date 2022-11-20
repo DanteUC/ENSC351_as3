@@ -1,6 +1,7 @@
 #include "audioMixer.h"
 #include "matrix.h"
 #include "joystick.h"
+#include "beatGenerator.h"
 #include "buttons.h"
 #include "utils.h"
 #include "control.h"
@@ -17,11 +18,13 @@ int main()
     printf("Starting beatbox...\n");
 
     matrix_initializeMatrix();
-    //AudioMixer_init();
+    AudioMixer_init();
+    beatGenerator_init();
     buttons_initializeButtons();
     control_startMatrix();
     control_startPollingButtons();
     control_startPollingJoystick();
+
 
     printf("Enter 'Q' to quit.\n");
     while (true) {
@@ -42,5 +45,7 @@ int main()
     control_stopPollingButtons();
     control_stopPollingJoystick();
     control_stopMatrix();
+    beatGenerator_cleanup();
+    AudioMixer_cleanup();
     return 0;
 }

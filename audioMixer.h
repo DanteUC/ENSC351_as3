@@ -30,4 +30,10 @@ void AudioMixer_queueSound(wavedata_t *pSound);
 int  AudioMixer_getVolume();
 void AudioMixer_setVolume(int newVolume);
 
+
+void AudioMixer_playBaseDrum();
+void AudioMixer_playSnare();
+void AudioMixer_playHiHat();
+
+
 #endif

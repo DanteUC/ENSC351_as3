@@ -19,6 +19,11 @@ static snd_pcm_t *handle;
 // Sample size note: This works for mono files because each sample ("frame') is 1 value.
 // If using stereo files then a frame would be two samples.
 
+
+#define BASEDRUM_FILE "beatbox-wav-files/100051__menegass__gui-drum-bd-hard.wav"
+#define HIHAT_FILE "beatbox-wav-files/100053__menegass__gui-drum-cc.wav"
+#define SNARE_FILE "beatbox-wav-files/100059__menegass__gui-drum-snare-soft.wav"
+
 static unsigned long playbackBufferSize = 0;
 static short *playbackBuffer = NULL;
 
@@ -44,6 +49,10 @@ static pthread_t playbackThreadId;
 static pthread_mutex_t audioMutex = PTHREAD_MUTEX_INITIALIZER;
 
 static int volume = 0;
+
+wavedata_t baseDrumFile;
+wavedata_t hiHatFile;
+wavedata_t snareFile;
 
 void AudioMixer_init(void)
 {
@@ -86,6 +95,12 @@ void AudioMixer_init(void)
 	snd_pcm_get_params(handle, &unusedBufferSize, &playbackBufferSize);
 	// ..allocate playback buffer:
 	playbackBuffer = malloc(playbackBufferSize * sizeof(*playbackBuffer));
+
+    // Load all wave files
+	
+	AudioMixer_readWaveFileIntoMemory(BASEDRUM_FILE, &baseDrumFile);
+	AudioMixer_readWaveFileIntoMemory(HIHAT_FILE, &hiHatFile);
+	AudioMixer_readWaveFileIntoMemory(SNARE_FILE, &snareFile);
 
 	// Launch playback thread:
 	pthread_create(&playbackThreadId, NULL, playbackThread, NULL);
@@ -135,7 +150,7 @@ void AudioMixer_readWaveFileIntoMemory(char *fileName, wavedata_t *pSound)
 void AudioMixer_freeWaveFileData(wavedata_t *pSound)
 {
 	pSound->numSamples = 0;
-	free(pSound->pData); 
+	free(pSound->pData);
 	pSound->pData = NULL;
 }
 
@@ -161,7 +176,7 @@ void AudioMixer_queueSound(wavedata_t *pSound)
 
     int i = 0;
     _Bool spaceFound = false; 
-    pthread_mutex_lock(&audioMutex);
+     
     for(i =0; i<MAX_SOUND_BITES; i++)
     {
         if(soundBites[i].pSound == NULL && soundBites[i].location == 0){
@@ -292,6 +307,51 @@ static void fillPlaybackBuffer(short *buff, int size)
 	 *
 	 */
 
+    memset(buff, 0, size*sizeof(buff));
+
+    pthread_mutex_lock(&audioMutex);
+    int i = 0;
+    for(i = 0; i< MAX_SOUND_BITES; i++) {
+        if(soundBites[i].pSound != NULL) {
+            int location = soundBites[i].location;
+            int soundNumSamples = soundBites[i].pSound->numSamples;
+            int note = 0;
+			int index = 0;
+			while(location < soundNumSamples && index < size)
+			{
+				// prev note + current data ie superposition
+				note = ((int)playbackBuffer[index] + (int)soundBites[i].pSound->pData[location]);
+				
+				// boundaries
+                if(note > SHRT_MAX)
+				{
+					note = SHRT_MAX;
+				}
+				if(note < SHRT_MIN)
+				{	
+					note = SHRT_MIN;
+				}
+				
+				// input correct data in buffer
+				playbackBuffer[index] = (short)note;
+
+				// iterators
+                index++;
+				location++;
+			}
+
+			// update final location
+			soundBites[i].location = location;
+			// free sound if done playing
+			if(soundBites[i].location >= soundBites[i].pSound->numSamples)
+			{
+				soundBites[i].pSound = NULL;
+                soundBites[i].location = 0;
+			}
+
+        }
+    }
+    pthread_mutex_unlock(&audioMutex);
 
 }
 
@@ -323,4 +383,20 @@ void* playbackThread(void* _arg)
 	}
 
 	return NULL;
+}
+
+
+void AudioMixer_playBaseDrum()
+{
+    AudioMixer_queueSound(&baseDrumFile);
+}
+
+void AudioMixer_playSnare()
+{
+    AudioMixer_queueSound(&snareFile);
+}
+
+void AudioMixer_playHiHat()
+{
+    AudioMixer_queueSound(&hiHatFile);
 }
