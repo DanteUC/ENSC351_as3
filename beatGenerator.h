@@ -4,13 +4,9 @@
 void beatGenerator_init();
 void beatGenerator_cleanup();
 
-void playRockBeat();
+int beatGenerator_getbpm();
 
-long long calculateHalfBeat_inMs();
-
-int get_bpm();
-void set_bpm(int setBPM);
-
-void sleepForMs(long long delayInMs);
+void beatGenerator_setbpm(int setBPM);
+long long beatGenerator_calculateHalfBeatInMs();
 
 #endif

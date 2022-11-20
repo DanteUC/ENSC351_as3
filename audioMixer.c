@@ -308,7 +308,7 @@ static void fillPlaybackBuffer(short *buff, int size)
 	 */
 
     memset(buff, 0, size*sizeof(buff));
-
+//critical section can be smaller??
     pthread_mutex_lock(&audioMutex);
     int i = 0;
     for(i = 0; i< MAX_SOUND_BITES; i++) {

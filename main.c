@@ -10,8 +10,11 @@
 #include <stdio.h>
 #include <time.h>
 #include <ctype.h>
+#include <pthread.h>
 
-//#define BASEDRUM_FILE "beatbox-wav-files/100051__menegass__gui-drum-bd-hard.wav"
+
+
+
 
 int main()
 {
@@ -24,28 +27,29 @@ int main()
     control_startMatrix();
     control_startPollingButtons();
     control_startPollingJoystick();
+    control_startPrint();
 
 
     printf("Enter 'Q' to quit.\n");
     while (true) {
         // Quit?
+    
         if (toupper(getchar()) == 'Q') {
             break;
         }
+        
     }
-
 
     // Load wave file we want to play:
 	// wavedata_t sampleFile;
 	// AudioMixer_readWaveFileIntoMemory(BASEDRUM_FILE, &sampleFile);
-
-   
-    // AudioMixer_cleanup();
-
+    control_stopPrint();
     control_stopPollingButtons();
     control_stopPollingJoystick();
     control_stopMatrix();
     beatGenerator_cleanup();
     AudioMixer_cleanup();
+
+    
     return 0;
 }

@@ -1,6 +1,6 @@
 #include "buttons.h"
 #include "utils.h"
-
+#include "audioMixer.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -69,12 +69,6 @@ static int waitForGpioEdge(const char* fileArrayForGpioValue [])
 	int fdTwo = 0;
 	int fdThree = 0;
 	int fdFour = 0;
-
-	// struct epoll_event structOne;
-	// struct epoll_event structTwo;
-	// struct epoll_event structThree;
-	// struct epoll_event structFour;
-
 
 	int fileDescriptors[] = {fdOne, fdTwo, fdThree, fdFour};
 	struct epoll_event epollStruct;
@@ -174,16 +168,13 @@ void buttons_pollButtons(){
 					//change beat mode
 					break;
 				case 1:
-					printf("base\n");
-					//play base drum
+					AudioMixer_playBaseDrum();
 					break;
 				case 2:
-					printf("snare\n");
-					//play snare drum
+					AudioMixer_playSnare();
 					break;
 				case 3: 
-					printf("play hi hat\n");
-					//play hi-hat
+					AudioMixer_playHiHat();
 					break;
 				default:
 					printf("waddahell\n");
