@@ -8,6 +8,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <pthread.h>
+#include "intervalTimer.h"
+
+Interval_statistics_t buffer;
+Interval_statistics_t beatbox;
 
 pthread_t printid;
 static pthread_t buttonid;
@@ -128,10 +132,13 @@ static void *control_print(void * arg){
     while(!isExit){
         printf("M%i    ",control_getMode());
         printf("BPM%i    ", beatGenerator_getbpm());
-        printf("vol:%i   ", AudioMixer_getVolume());
+        printf("vol:%i    ", AudioMixer_getVolume());
         
-        //time interval between each playback buffer??
-        printf("Beat:%lld ms\n",beatGenerator_calculateHalfBeatInMs());
+        printf("Low ");
+        Interval_getStatisticsAndClear(INTERVAL_LOW_LEVEL_AUDIO, &buffer);
+        printf("    Beat ");
+        Interval_getStatisticsAndClear(INTERVAL_BEAT_BOX, &beatbox);
+        printf("\n");
         Utils_sleepForMs(1000);
     }
     

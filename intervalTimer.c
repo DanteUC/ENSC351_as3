@@ -83,6 +83,8 @@ void Interval_getStatisticsAndClear(
         // Clear
         pData->timestampCount = 0;
     }
+    printf("[%.2f, %.2f]", pStats->minIntervalInMs, pStats->maxIntervalInMs);
+    printf("avg %.2f/%d", pStats->avgIntervalInMs, pStats->numSamples); 
     pthread_mutex_unlock(&lock);
 }
 

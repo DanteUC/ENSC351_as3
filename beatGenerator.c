@@ -3,6 +3,7 @@
 #include "audioMixer.h"
 #include "control.h"
 #include "utils.h"
+#include "intervalTimer.h"
 #include <stdbool.h>
 #include <pthread.h>
 #include <stdio.h>
@@ -14,11 +15,11 @@ static pthread_t beatGenThreadId;
 //static pthread_mutex_t beatGenMutex = PTHREAD_MUTEX_INITIALIZER;
 
 static _Bool stopping = false;
-
+Interval_statistics_t eighthInterval;
 void beatGenerator_init()
 {
     bpm = 120;
-    //Interval_init();
+    Interval_init();
     pthread_create(&beatGenThreadId, NULL, beatGenerator_thread, NULL);
 }
 
@@ -26,7 +27,7 @@ void beatGenerator_init()
 void beatGenerator_cleanup()
 {
     stopping = true;
-    //Interval_cleanup();
+    Interval_cleanup();
     pthread_join(beatGenThreadId, NULL);
 }
 
@@ -41,21 +42,28 @@ static void beatGenerator_playRockBeat()
     AudioMixer_playBaseDrum();
     AudioMixer_playHiHat();
     Utils_sleepForMs(beatGenerator_calculateHalfBeatInMs());
+    Interval_markInterval(INTERVAL_BEAT_BOX);
     AudioMixer_playHiHat();
     Utils_sleepForMs(beatGenerator_calculateHalfBeatInMs());
+    Interval_markInterval(INTERVAL_BEAT_BOX);
     AudioMixer_playHiHat();
     AudioMixer_playSnare();
     Utils_sleepForMs(beatGenerator_calculateHalfBeatInMs());
+    Interval_markInterval(INTERVAL_BEAT_BOX);
     AudioMixer_playHiHat();
     Utils_sleepForMs(beatGenerator_calculateHalfBeatInMs());
+    Interval_markInterval(INTERVAL_BEAT_BOX);
     AudioMixer_playBaseDrum();
     AudioMixer_playHiHat();
     Utils_sleepForMs(beatGenerator_calculateHalfBeatInMs());
+    Interval_markInterval(INTERVAL_BEAT_BOX);
     AudioMixer_playHiHat();
     Utils_sleepForMs(beatGenerator_calculateHalfBeatInMs());
+    Interval_markInterval(INTERVAL_BEAT_BOX);
     AudioMixer_playHiHat();
     AudioMixer_playSnare();
     Utils_sleepForMs(beatGenerator_calculateHalfBeatInMs());
+    Interval_markInterval(INTERVAL_BEAT_BOX);
     AudioMixer_playHiHat();
 }
 
@@ -63,18 +71,25 @@ static void beatGenerator_playCustomBeat()
 {
     AudioMixer_playBaseDrum();
     Utils_sleepForMs(beatGenerator_calculateHalfBeatInMs());
+    Interval_markInterval(INTERVAL_BEAT_BOX);
     AudioMixer_playBaseDrum();
     Utils_sleepForMs(beatGenerator_calculateHalfBeatInMs());
+    Interval_markInterval(INTERVAL_BEAT_BOX);
     AudioMixer_playHiHat();
     Utils_sleepForMs(beatGenerator_calculateHalfBeatInMs());
+    Interval_markInterval(INTERVAL_BEAT_BOX);
     
     Utils_sleepForMs(beatGenerator_calculateHalfBeatInMs());
+    Interval_markInterval(INTERVAL_BEAT_BOX);
     AudioMixer_playBaseDrum();
     Utils_sleepForMs(beatGenerator_calculateHalfBeatInMs());
+    Interval_markInterval(INTERVAL_BEAT_BOX);
     AudioMixer_playBaseDrum();
     Utils_sleepForMs(beatGenerator_calculateHalfBeatInMs());
+    Interval_markInterval(INTERVAL_BEAT_BOX);
     AudioMixer_playHiHat();
     Utils_sleepForMs(beatGenerator_calculateHalfBeatInMs());
+    Interval_markInterval(INTERVAL_BEAT_BOX);
     
 }
 

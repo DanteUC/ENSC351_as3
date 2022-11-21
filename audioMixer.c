@@ -2,6 +2,7 @@
 // which are left as incomplete.
 // Note: Generates low latency audio on BeagleBone Black; higher latency found on host.
 #include "audioMixer.h"
+#include "intervalTimer.h"
 #include <alsa/asoundlib.h>
 #include <stdbool.h>
 #include <pthread.h>
@@ -27,7 +28,7 @@ static snd_pcm_t *handle;
 static unsigned long playbackBufferSize = 0;
 static short *playbackBuffer = NULL;
 
-
+Interval_statistics_t bufferTimer;
 // Currently active (waiting to be played) sound bites
 #define MAX_SOUND_BITES 30
 typedef struct {
@@ -61,6 +62,7 @@ void AudioMixer_init(void)
 	// Initialize the currently active sound-bites being played
 	// REVISIT:- Implement this. Hint: set the pSound pointer to NULL for each
 	//     sound bite.
+	
     int i = 0;
     for (i = 0; i<MAX_SOUND_BITES; i++)
     {
@@ -215,7 +217,7 @@ void AudioMixer_cleanup(void)
 	//  in addition to this by calling AudioMixer_freeWaveFileData() on that struct.)
 	free(playbackBuffer);
 	playbackBuffer = NULL;
-	
+
 	fflush(stdout);
 }
 
@@ -353,6 +355,7 @@ static void fillPlaybackBuffer(short *buff, int size)
 
         }
     }
+	Interval_markInterval(INTERVAL_LOW_LEVEL_AUDIO);
     pthread_mutex_unlock(&audioMutex);
 
 }
