@@ -1,4 +1,5 @@
 #include "beatGenerator.h"
+//#include "intervalTimer.h"
 #include "audioMixer.h"
 #include "control.h"
 #include "utils.h"
@@ -17,6 +18,7 @@ static _Bool stopping = false;
 void beatGenerator_init()
 {
     bpm = 120;
+    //Interval_init();
     pthread_create(&beatGenThreadId, NULL, beatGenerator_thread, NULL);
 }
 
@@ -24,6 +26,7 @@ void beatGenerator_init()
 void beatGenerator_cleanup()
 {
     stopping = true;
+    //Interval_cleanup();
     pthread_join(beatGenThreadId, NULL);
 }
 
@@ -83,7 +86,7 @@ int beatGenerator_getbpm()
 void beatGenerator_setbpm(int setBPM)
 {
     if(setBPM > 300 || setBPM < 40){
-        //do nothing
+        printf("ERROR: BPM can only be between 40 and 300 BPM\n");
     }else{
         bpm = setBPM;
     }

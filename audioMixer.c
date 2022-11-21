@@ -197,19 +197,15 @@ void AudioMixer_queueSound(wavedata_t *pSound)
 
 void AudioMixer_cleanup(void)
 {
-	printf("Stopping audio...\n");
 
 	// Stop the PCM generation thread
 	stopping = true;
 	pthread_join(playbackThreadId, NULL);
 
-	printf("pcm drain\n");
 	// Shutdown the PCM output, allowing any pending sound to play out (drain)
 	snd_pcm_drain(handle);
-	printf("pcm close\n");
 	snd_pcm_close(handle);
 
-	printf("freeing audio files\n");
 	AudioMixer_freeWaveFileData(&hiHatFile);
 	AudioMixer_freeWaveFileData(&baseDrumFile);
 	AudioMixer_freeWaveFileData(&snareFile);
@@ -217,11 +213,9 @@ void AudioMixer_cleanup(void)
 	// Free playback buffer
 	// (note that any wave files read into wavedata_t records must be freed
 	//  in addition to this by calling AudioMixer_freeWaveFileData() on that struct.)
-	printf("freeing playback buffer\n");
 	free(playbackBuffer);
 	playbackBuffer = NULL;
-
-	printf("Done stopping audio...\n");
+	
 	fflush(stdout);
 }
 
@@ -315,7 +309,7 @@ static void fillPlaybackBuffer(short *buff, int size)
 	 *
 	 */
 
-    memset(buff, 0, size);
+    memset(buff, 0, size*sizeof(buff[0]));
 //critical section can be smaller??
     pthread_mutex_lock(&audioMutex);
     int i = 0;

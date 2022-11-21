@@ -21,6 +21,10 @@
 #define BUTTON_2 "/sys/class/gpio/gpio46"
 #define BUTTON_3 "/sys/class/gpio/gpio27"
 #define BUTTON_4 "/sys/class/gpio/gpio65"
+#define BUTTON_1_VAL "/sys/class/gpio/gpio47/value"
+#define BUTTON_2_VAL "/sys/class/gpio/gpio46/value"
+#define BUTTON_3_VAL "/sys/class/gpio/gpio27/value"
+#define BUTTON_4_VAL "/sys/class/gpio/gpio65/value"
 #define VALUE_PATH "/value"
 #define DIRECTION_PATH "/direction"
 #define ACTIVE_LOW_PATH "/active_low"
@@ -28,18 +32,7 @@
 #define BUTTON_ARRAY_SIZE 4
 
 const char* ButtonArray[] = {BUTTON_1, BUTTON_2, BUTTON_3, BUTTON_4};
-
-
-
-// void* buttonsThread(void* arg)
-// {
-
-// }
-
-//static _Bool stopping = false;
-//static pthread_t buttonsThreadid;
-//static pthread_mutex_t audioMutex = PTHREAD_MUTEX_INITIALIZER;
-
+const char* valueArray[] = {BUTTON_1_VAL, BUTTON_2_VAL, BUTTON_3_VAL, BUTTON_4_VAL};
 
 
 //Dr. Brian's code for edge trigger GPIO
@@ -68,8 +61,9 @@ static int waitForGpioEdge(const char* fileArrayForGpioValue [])
 
 	// open GPIO value file:
 	for(int i = 0; i < BUTTON_ARRAY_SIZE;i++){
-		char *filepath = Utils_concat(fileArrayForGpioValue[i], VALUE_PATH);
-		fileDescriptors[i] = open(filepath, O_RDONLY | O_NONBLOCK);
+		
+		fileDescriptors[i] = open(fileArrayForGpioValue[i], O_RDONLY | O_NONBLOCK);
+
 		if (fileDescriptors[i] == -1) {
 			fprintf(stderr, "ERROR: unable to open() GPIO value file (%d) = %s\n", fileDescriptors[i], strerror(errno));
 			return -1;
@@ -84,7 +78,7 @@ static int waitForGpioEdge(const char* fileArrayForGpioValue [])
 			fprintf(stderr, "ERROR: epoll_ctl() failed on add control interface (%d) = %s\n", fileDescriptors[i], strerror(errno));
 			return -1;
 		}
-		free(filepath);
+		
 	}
 	
 
@@ -131,7 +125,6 @@ void buttons_initializeButtons()
         Utils_writeToFile(active_low, "0");
         char *edgePath = Utils_concat(ButtonArray[i], EDGE);
         Utils_writeToFile(edgePath, RISING_EDGE);
-
 		free(directionPath);
 		free(active_low);
 		free(edgePath);
@@ -148,15 +141,16 @@ static int readLineFromFile(char* fileName, char* buff, unsigned int maxLength)
 
 void buttons_pollButtons(){
 	// Wait for an edge trigger:
-	int ret = waitForGpioEdge(ButtonArray);
+	int ret = waitForGpioEdge(valueArray);
 	if (ret == -1) {
 		exit(EXIT_FAILURE);
 	}
 	
 	// Current state:
+	
 	for(int i = 0; i < BUTTON_ARRAY_SIZE;i++){
 		char buff[1024];
-		char *filepath = Utils_concat(ButtonArray[i], VALUE_PATH);
+		char* filepath = Utils_concat(ButtonArray[i], VALUE_PATH);
 		int bytesRead = readLineFromFile(filepath, buff, 1024);
 		if (bytesRead > 0) {
 			

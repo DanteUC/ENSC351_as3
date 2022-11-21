@@ -81,6 +81,7 @@ int Utils_readIntFromFile(char *button)
     return atoi(buff); // can return buffer then caller can atoi
 }
 
+//have to free result 
 char *Utils_concat(const char *s1, const char *s2)
 {
     char *result = malloc(strlen(s1) + strlen(s2) + 1); // +1 for the null-terminator

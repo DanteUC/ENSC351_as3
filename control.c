@@ -126,11 +126,12 @@ static void control_pollJoystick()
 
 static void *control_print(void * arg){
     while(!isExit){
-        printf("mode:%i\n",control_getMode());
-        printf("beats per minute:%i\n", beatGenerator_getbpm());
-        printf("volume:%i\n", AudioMixer_getVolume());
-        //time between each playback buffer??
-        printf("8th note interval:%lld\n",beatGenerator_calculateHalfBeatInMs());
+        printf("M%i    ",control_getMode());
+        printf("BPM%i    ", beatGenerator_getbpm());
+        printf("vol:%i   ", AudioMixer_getVolume());
+        
+        //time interval between each playback buffer??
+        printf("Beat:%lld ms\n",beatGenerator_calculateHalfBeatInMs());
         Utils_sleepForMs(1000);
     }
     
