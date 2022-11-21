@@ -35,9 +35,12 @@ int main()
     // Load wave file we want to play:
 	// wavedata_t sampleFile;
 	// AudioMixer_readWaveFileIntoMemory(BASEDRUM_FILE, &sampleFile);
-    control_stopThreads();
+    control_UICleanup();
+    printf("stopped UI threads\n");
     beatGenerator_cleanup();
+    printf("stopped beat generator\n");
     AudioMixer_cleanup();
+    printf("stopped audiomixer\n");
 
     
     return 0;

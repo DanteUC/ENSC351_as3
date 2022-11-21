@@ -7,7 +7,7 @@
 //start the threads
 void control_startThreads();
 //cleanup memory and join threads
-void control_stopThreads();
+void control_UICleanup();
 
 //updates the current application mode by incrementing one or setting back to 0
 void control_updateMode();

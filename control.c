@@ -180,7 +180,7 @@ void control_startThreads(){
 }
 
 
-void control_stopThreads(){
+void control_UICleanup(){
     isExit = true;
     pthread_join(matrixid, NULL);
     pthread_join(buttonid, NULL);

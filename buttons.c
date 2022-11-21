@@ -30,13 +30,6 @@
 const char* ButtonArray[] = {BUTTON_1, BUTTON_2, BUTTON_3, BUTTON_4};
 
 
-void ButtonArray_getButtonValues(int *values)
-{
-    for(int i = 0; i< BUTTON_ARRAY_SIZE; i++){
-        values[i] = Utils_readIntFromFile(Utils_concat(ButtonArray[i], VALUE_PATH));
-    }
-}
-
 
 // void* buttonsThread(void* arg)
 // {
@@ -75,7 +68,8 @@ static int waitForGpioEdge(const char* fileArrayForGpioValue [])
 
 	// open GPIO value file:
 	for(int i = 0; i < BUTTON_ARRAY_SIZE;i++){
-		fileDescriptors[i] = open(Utils_concat(fileArrayForGpioValue[i], VALUE_PATH), O_RDONLY | O_NONBLOCK);
+		char *filepath = Utils_concat(fileArrayForGpioValue[i], VALUE_PATH);
+		fileDescriptors[i] = open(filepath, O_RDONLY | O_NONBLOCK);
 		if (fileDescriptors[i] == -1) {
 			fprintf(stderr, "ERROR: unable to open() GPIO value file (%d) = %s\n", fileDescriptors[i], strerror(errno));
 			return -1;
@@ -90,6 +84,7 @@ static int waitForGpioEdge(const char* fileArrayForGpioValue [])
 			fprintf(stderr, "ERROR: epoll_ctl() failed on add control interface (%d) = %s\n", fileDescriptors[i], strerror(errno));
 			return -1;
 		}
+		free(filepath);
 	}
 	
 
@@ -136,6 +131,10 @@ void buttons_initializeButtons()
         Utils_writeToFile(active_low, "0");
         char *edgePath = Utils_concat(ButtonArray[i], EDGE);
         Utils_writeToFile(edgePath, RISING_EDGE);
+
+		free(directionPath);
+		free(active_low);
+		free(edgePath);
     }
 }
 
@@ -157,7 +156,8 @@ void buttons_pollButtons(){
 	// Current state:
 	for(int i = 0; i < BUTTON_ARRAY_SIZE;i++){
 		char buff[1024];
-		int bytesRead = readLineFromFile(Utils_concat(ButtonArray[i], VALUE_PATH), buff, 1024);
+		char *filepath = Utils_concat(ButtonArray[i], VALUE_PATH);
+		int bytesRead = readLineFromFile(filepath, buff, 1024);
 		if (bytesRead > 0) {
 			
 			if(buff[0]=='1'){
@@ -185,6 +185,7 @@ void buttons_pollButtons(){
 		} else {
 			fprintf(stderr, "ERROR: Read 0 bytes from GPIO input: %s\n", strerror(errno));
 		}
+		free(filepath);
 	}
 	
 	Utils_sleepForMs(100);
